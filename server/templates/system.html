@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>System Info</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="terminal-frame">
+        <div id="terminal-header">
+            <div class="traffic-light red"></div>
+            <div class="traffic-light yellow"></div>
+            <div class="traffic-light green"></div>
+        </div>
+        <div style="padding: 20px; color: #00ff66; font-family: monospace;">
+            <h2>Agent System Info</h2>
+            {% if info %}
+                <ul>
+                {% for key, value in info.items() %}
+                    <li><b>{{ key }}:</b> {{ value }}</li>
+                {% endfor %}
+                </ul>
+            {% else %}
+                <p>No system info received yet.</p>
+            {% endif %}
+            <a href="/" style="color: #0ff;">← Back to Terminal</a>
+        </div>
+    </div>
+</body>
+</html>
