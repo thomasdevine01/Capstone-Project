@@ -13,15 +13,16 @@ It features a terminal that allows you to:
 - Python 3.7+ (Agent + Server)
 
 ## Getting Started
+### Docker Install
+1. Launch Docker
+2. Run `docker compose up`
+### Local Install
 
-### 1. Run the Server
-
+#### 1. Run the Server
 ```bash
 python3 server.py
 ```
-
-### 2. Run the Agent
-
+#### 2. Run the Agent
 ```
 python3 agent.py
 ```

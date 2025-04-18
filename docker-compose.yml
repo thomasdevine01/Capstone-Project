@@ -1,0 +1,11 @@
+services:
+  c2server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: c2-terminal
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./server:/app
+    restart: unless-stopped

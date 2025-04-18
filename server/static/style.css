@@ -1,16 +1,20 @@
+/* ───── Base Layout ───── */
 body {
     background: #1e1e1e;
     margin: 0;
     font-family: Menlo, Monaco, Consolas, monospace;
 }
+
+/* ───── Terminal Frame & Header ───── */
 #terminal-frame {
     max-width: 800px;
     margin: 40px auto;
     background: #1e1e1e;
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0,0,0,0.7);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.7);
     overflow: hidden;
 }
+
 #terminal-header {
     background: #2b2b2b;
     height: 32px;
@@ -19,14 +23,18 @@ body {
     align-items: center;
     gap: 8px;
 }
+
+/* ───── Traffic Lights ───── */
 .traffic-light {
     width: 12px;
     height: 12px;
     border-radius: 50%;
 }
-.red { background: #ff5f57; }
+.red    { background: #ff5f57; }
 .yellow { background: #ffbd2e; }
-.green { background: #28c840; }
+.green  { background: #28c840; }
+
+/* ───── Terminal Body & Lines ───── */
 #terminal-body {
     padding: 20px;
     color: #00ff66;
@@ -34,22 +42,27 @@ body {
     min-height: 400px;
     font-size: 14px;
 }
+
 .line {
     display: flex;
     align-items: center;
     margin-bottom: 4px;
 }
+
 .prompt {
     white-space: nowrap;
     margin-right: 5px;
 }
+
 .result {
     white-space: pre-wrap;
     word-wrap: break-word;
     margin-left: 1.3em;
     margin-bottom: 4px;
 }
-input[type=text] {
+
+/* ───── Input & Spinner ───── */
+input[type="text"] {
     background: transparent;
     border: none;
     outline: none;
@@ -57,12 +70,15 @@ input[type=text] {
     font-size: 14px;
     width: 90%;
 }
+
 .spinner-dots {
     display: inline-block;
     margin-left: 6px;
     color: #00ff66;
     font-weight: bold;
 }
+
+/* ───── Status & Ping Button ───── */
 #status-indicator {
     position: fixed;
     bottom: 10px;
@@ -71,7 +87,6 @@ input[type=text] {
     font-size: 14px;
     color: #ff5555;
 }
-
 #status-indicator.online {
     color: #00ff66;
 }
@@ -80,13 +95,15 @@ input[type=text] {
     position: fixed;
     bottom: 10px;
     left: 20px;
-    background: #222;
+    background: #1e1e1e;
     color: #00ff66;
     border: 1px solid #00ff66;
     font-family: monospace;
     padding: 5px 10px;
     cursor: pointer;
 }
+
+/* ───── Navigation Bar ───── */
 #nav-bar {
     display: flex;
     gap: 20px;
@@ -106,28 +123,3 @@ input[type=text] {
     text-decoration: underline;
     color: #0f0;
 }
-#status-indicator {
-    position: fixed;
-    bottom: 10px;
-    right: 20px;
-    font-family: monospace;
-    font-size: 14px;
-    color: #ff5555;
-}
-
-#status-indicator.online {
-    color: #00ff66;
-}
-
-#ping-button {
-    position: fixed;
-    bottom: 10px;
-    left: 20px;
-    background: #1e1e1e;
-    color: #00ff66;
-    border: 1px solid #00ff66;
-    font-family: monospace;
-    padding: 5px 10px;
-    cursor: pointer;
-}
-
