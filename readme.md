@@ -8,13 +8,9 @@ It features a terminal that allows you to:
 - Browse the agent’s file system
 - View connection status + last ping
 
----
-
 ## Requirements
 
 - Python 3.7+ (Agent + Server)
-
----
 
 ## Getting Started
 
