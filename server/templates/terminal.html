@@ -1,25 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Terminal</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div id="terminal-frame">
-        <div id="terminal-header">
-            <div class="traffic-light red"></div>
-            <div class="traffic-light yellow"></div>
-            <div class="traffic-light green"></div>
-        </div>
-        <div style="padding: 10px;">
-            <a href="/" style="color:#0f0; margin-right:20px;">Terminal</a>
-            <a href="/request_info" style="color:#0f0;">System Info</a>
-        </div>
-        <div id="terminal-body"></div>
-    </div>
-    <script>
-        const terminalHost = "{{ prompt_host }}";
-    </script>
-    <script src="{{ url_for('static', filename='terminal.js') }}"></script>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}Terminal{% endblock %}
+
+{% block content %}
+<div id="terminal-body"></div>
+
+<script>
+    const terminalHost = "{{ prompt_host }}";
+</script>
+<script src="{{ url_for('static', filename='terminal.js') }}"></script>
+{% endblock %}

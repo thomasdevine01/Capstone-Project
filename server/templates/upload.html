@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Upload File{% endblock %}
+
+{% block content %}
+<div style="padding: 20px; color: #00ff66; font-family: monospace;">
+    <h2>Upload File to Agent</h2>
+    <form method="post" enctype="multipart/form-data">
+        <label>Select file:</label><br>
+        <input type="file" name="file" style="margin-top: 10px;"><br><br>
+        <input type="submit" value="Upload File" style="background: #1e1e1e; color: #00ff66; border: 1px solid #00ff66; padding: 5px 15px; font-family: monospace; cursor: pointer;">
+    </form>
+</div>
+{% endblock %}

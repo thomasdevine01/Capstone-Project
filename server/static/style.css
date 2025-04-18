@@ -63,3 +63,71 @@ input[type=text] {
     color: #00ff66;
     font-weight: bold;
 }
+#status-indicator {
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    font-family: monospace;
+    font-size: 14px;
+    color: #ff5555;
+}
+
+#status-indicator.online {
+    color: #00ff66;
+}
+
+#ping-button {
+    position: fixed;
+    bottom: 10px;
+    left: 20px;
+    background: #222;
+    color: #00ff66;
+    border: 1px solid #00ff66;
+    font-family: monospace;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+#nav-bar {
+    display: flex;
+    gap: 20px;
+    padding: 12px 20px;
+    background: #1e1e1e;
+    font-family: monospace;
+}
+
+.nav-link {
+    color: #00ff66;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 2px 4px;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+    color: #0f0;
+}
+#status-indicator {
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    font-family: monospace;
+    font-size: 14px;
+    color: #ff5555;
+}
+
+#status-indicator.online {
+    color: #00ff66;
+}
+
+#ping-button {
+    position: fixed;
+    bottom: 10px;
+    left: 20px;
+    background: #1e1e1e;
+    color: #00ff66;
+    border: 1px solid #00ff66;
+    font-family: monospace;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}C2 Terminal{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div id="terminal-frame">
+        <div id="terminal-header">
+            <div class="traffic-light red"></div>
+            <div class="traffic-light yellow"></div>
+            <div class="traffic-light green"></div>
+        </div>
+
+        <div id="nav-bar">
+            <a href="/" class="nav-link">Terminal</a>
+            <a href="/request_info" class="nav-link">System Info</a>
+            <a href="/upload" class="nav-link">Upload File</a>
+            <a href="/browse" class="nav-link">File Manager</a>
+        </div>
+
+        {% block content %}{% endblock %}
+    </div>
+    <div id="status-indicator">● Unknown</div>
+    <button onclick="pingAgent()" id="ping-button">Ping Agent</button>
+    
+    <script>
+        async function pingAgent() {
+            const indicator = document.getElementById('status-indicator');
+            indicator.textContent = "⌛ Waiting for ping...";
+        
+            // Ask server to tell agent to ping
+            await fetch('/request_ping', { method: 'POST' });
+        
+            // Wait for agent to send the heartbeat
+            await new Promise(r => setTimeout(r, 2000));
+        
+            // Fetch status update
+            const res = await fetch('/status');
+            const data = await res.json();
+        
+            const icon = data.online ? "● Online" : "● Offline";
+            indicator.classList.toggle("online", data.online);
+            indicator.textContent = `${icon} — Last ping: ${data.last_seen}`;
+        }
+        </script>
+        
+    
+    
+</body>
+</html>

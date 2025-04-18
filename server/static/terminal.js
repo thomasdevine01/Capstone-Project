@@ -80,5 +80,26 @@ function createInputLine() {
     terminalBody.scrollTop = terminalBody.scrollHeight;
 }
 
+async function pingAgent() {
+    await fetch('/request_ping', { method: 'POST' });
+}
+
+async function checkStatus() {
+    const res = await fetch('/status');
+    const data = await res.json();
+    const indicator = document.getElementById('status-indicator');
+    if (data.online) {
+        indicator.textContent = '● Online';
+        indicator.classList.add('online');
+    } else {
+        indicator.textContent = '● Offline';
+        indicator.classList.remove('online');
+    }
+}
+
+// Poll every 3 seconds
+setInterval(checkStatus, 3000);
+checkStatus();
+
 terminalBody.innerHTML = '';
 createInputLine();

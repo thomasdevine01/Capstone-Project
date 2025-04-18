@@ -1,29 +1,33 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>System Info</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-</head>
-<body>
-    <div id="terminal-frame">
-        <div id="terminal-header">
-            <div class="traffic-light red"></div>
-            <div class="traffic-light yellow"></div>
-            <div class="traffic-light green"></div>
-        </div>
-        <div style="padding: 20px; color: #00ff66; font-family: monospace;">
-            <h2>Agent System Info</h2>
-            {% if info %}
-                <ul>
-                {% for key, value in info.items() %}
-                    <li><b>{{ key }}:</b> {{ value }}</li>
-                {% endfor %}
-                </ul>
-            {% else %}
-                <p>No system info received yet.</p>
-            {% endif %}
-            <a href="/" style="color: #0ff;">← Back to Terminal</a>
-        </div>
-    </div>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}System Info{% endblock %}
+
+{% block content %}
+<div style="padding: 20px; color: #00ff66; font-family: monospace;">
+    <h2>Agent System Info</h2>
+    <div id="info-block">Loading system info...</div>
+</div>
+
+<script>
+async function updateSystemInfo() {
+    const res = await fetch('/system_data');
+    const data = await res.json();
+
+    const block = document.getElementById('info-block');
+    if (Object.keys(data).length === 0) {
+        block.innerHTML = "<p>No system info received yet.</p>";
+        return;
+    }
+
+    let html = "<ul>";
+    for (const key in data) {
+        html += `<li><b>${key}:</b> ${data[key]}</li>`;
+    }
+    html += "</ul>";
+    block.innerHTML = html;
+}
+
+setInterval(updateSystemInfo, 3000);
+updateSystemInfo();
+</script>
+{% endblock %}

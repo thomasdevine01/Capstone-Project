@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}File Manager{% endblock %}
+
+{% block content %}
+<div style="padding: 20px; font-family: monospace; color: #00ff66;">
+    <h2 id="current-path">File Manager</h2>
+
+    <form id="browse-form">
+        <input type="text" id="path" name="path" placeholder="Path to browse" value="{{ path or '.' }}" style="width: 70%;">
+        <input type="submit" value="Browse" style="margin-left: 10px;">
+    </form>
+
+    <br>
+    <table>
+        <thead>
+            <tr><th>Name</th><th>Type</th><th>Size</th></tr>
+        </thead>
+        <tbody id="listing-table">
+            <tr><td colspan="3">Loading...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("browse-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const path = document.getElementById("path").value;
+        await fetch("/request_browse", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ path })
+        });
+        refreshListing();
+    });
+
+    refreshListing();
+    setInterval(refreshListing, 3000);
+});
+
+async function refreshListing() {
+    const res = await fetch("/file_listing");
+    const data = await res.json();
+    const { path, listing } = data;
+
+    document.getElementById("current-path").textContent = `File Manager - ${path}`;
+
+    const table = document.getElementById("listing-table");
+    table.innerHTML = "";
+
+    if (!listing.length) {
+        table.innerHTML = "<tr><td colspan='3'>Waiting for agent to respond...</td></tr>";
+        return;
+    }
+
+    for (const item of listing) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td>${item.name}</td>
+            <td>${item.type}</td>
+            <td>${item.size}</td>
+        `;
+        table.appendChild(row);
+    }
+}
+</script>
+{% endblock %}
