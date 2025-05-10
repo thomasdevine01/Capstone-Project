@@ -8,6 +8,8 @@ function createLineWithText(text) {
     terminalBody.appendChild(line);
 }
 
+// creates a new line in the terminal to display the output of a command.
+// creates a new div -> escape the div -> append the result to the terminal
 function createResultLine(text) {
     const result = document.createElement('div');
     result.className = 'result';
@@ -15,6 +17,10 @@ function createResultLine(text) {
     terminalBody.appendChild(result);
 }
 
+// This function creates an input line in the terminal, captures the user's command,
+// sends it to the server, shows a loading spinner, and displays the result.
+// creates a new div -> adds prompt + input -> on enter: sends command
+//      -> shows spinner -> polls for result -> appends result + new input
 function createInputLine() {
     const line = document.createElement('div');
     line.className = 'line';

