@@ -30,3 +30,23 @@ The agent will:
 - Poll for shell commands
 - Post system info on request
 - Respond to file browser requests
+
+## Setup
+
+1. Run the server
+    - Grab the second IP (This is the endpoint make sure it can be reached!)
+2. Edit agent.py SERVER_HOST to the ip
+
+## Creating a MacOS VM
+
+1. Download UTM [here](https://mac.getutm.app/)
+2. Select Create a virtual machine
+3. Select Virtualize
+4. Select macOS 12+
+5. Select continue/save until finished
+6. Aditionally there should be a shared folder with the agent to download.
+
+## Setup needed for macOS
+1. Download Rye (on the vm) [here](https://rye.astral.sh/)
+    - or run `curl -sSf https://rye.astral.sh/get | bash`
+2. Run `python3 path/to/agent.py`
